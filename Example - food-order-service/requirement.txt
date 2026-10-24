@@ -1,0 +1,2 @@
+# Compatibility with the original filename. Dependencies live in pyproject.toml.
+-e .

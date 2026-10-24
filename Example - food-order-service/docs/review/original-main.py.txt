@@ -1,0 +1,79 @@
+from fastapi import FastAPI
+from fastapi import Request
+import uvicorn
+
+app = FastAPI(
+    title="Uber Eats API Services",
+    description="This is a sample API for Uber Eats services",
+    version="0.0.1",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
+)
+
+
+@app.get("/")
+def read_root():
+    """Root endpoint -- Health check"""
+    # FastAPI converts the return value to JSON automatically
+    return {"message": "Welcome to the Uber Eats API Services", "status": "healthy"}
+
+
+@app.get("/about")
+def read_about():
+    """About endpoint -- Information about the API metadata"""
+    return {
+        "service": "Uber Eats API Services",
+        "team": "backend team",
+        "version": "0.0.1",
+        "region": "ap-south-1",
+        "status": "healthy",
+        "description": "This is a sample API for Uber Eats services",
+    }
+
+
+@app.get("/orders")
+def list_orders():
+    """List recent orders"""
+    return {
+        "orders": [
+            {"id": 1, "item": "Chicken Kadai", "count": 1, "status": "delivered"},
+            {"id": 1, "item": "Chicken Sukka", "count": 2, "status": "preparing"},
+            {"id": 1, "item": "Chicken Steak", "count": 1, "status": "pending"},
+        ]
+    }
+
+
+@app.get("/orders/status")
+def order_status():
+    """Get order status"""
+    return {"total_today": 3_24102026, "city": "bengalore"}
+
+
+@app.get("/debug/request-info")
+async def request_info(request: Request):
+    """Inspect the raw request object"""
+    return {
+        "method": request.method,
+        "url": str(request.url),
+        "headers": dict(request.headers),
+        "path_params": request.path_params,
+        "query_params": dict(request.query_params),
+    }
+
+
+@app.get(
+    "/oders/active",
+    summary="Get active orders",
+    description="Returns all recent active orders",
+    tags=["orders"],
+    response_description="",
+    deprecated=False,
+)
+def get_active_orders():
+    """Doc"""
+    return {}
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
